@@ -1,14 +1,14 @@
 #include <ros/ros.h>
 #include <abd/Data.h>
-#include <abd/Breakpoint.h> //breakpointpub
+#include <abd/Breakpoint.h>
 #include <sensor_msgs/LaserScan.h>
-
 
 #include <iostream>
 #include <cmath>
+#include <memory>
 using namespace std;
 
-class abd_node
+class AbdNode
 {
 private:
 	//라이다 스펙
@@ -16,89 +16,75 @@ private:
 	const double LASER_THETA = 0.25
 
 	//실험적으로 얻어야 할 인자값들
-	const int LAMBDA = 10			//LAMBDA 90
-	const double SIGMA = 0.03		//SIGMA 0.005
+	const int LAMBDA = 10			//Testing : LAMBDA 90
+	const double SIGMA = 0.03		//Testing : SIGMA 0.005
 
 	ros::NodeHandle n;
-	ros::Publisher abd_pub;
-	ros::Publisher abd_pub2;
-	ros::Subscriber scan_sub;
+	ros::Publisher bp_removed_laser_pub_;
+	ros::Publisher is_breakpoint_pub_;
+	ros::Subscriber scan_sub_;
 
-	abd::Data msg;
-	abd::Breakpoint breakpoint_msg; //breakpointpub
+	abd::Data bp_removed_laser_msg_;
+	abd::Breakpoint is_breakpoint_msg_; 
 public:
-	abd_node();
-	double deg_rad(double input);
+	AbdNode();
+	const double deg2rad(const double& deg) const { return deg * M_PI / 180; }
 	void scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan);
 };
 
-abd_node::abd_node(void)
+AbdNode::AbdNode(void)
 {
-	abd_pub = n.advertise<abd::Data>("breakpoint_removed", 100);
-	abd_pub2 = n.advertise<abd::Breakpoint>("breakpoint", 100); //breakpointpub
-	scan_sub = n.subscribe("/scan", 100, &abd_node::scanCallback, this);
+	bp_removed_laser_pub_ = n.advertise<abd::Data>("breakpoint_removed", 100);
+	is_breakpoint_pub_ = n.advertise<abd::Breakpoint>("breakpoint", 100);
+	scan_sub_ = n.subscribe("/scan", 100, &AbdNode::scanCallback, this);
 }
 
-//각도를 라디안으로 변환
-double abd_node::deg_rad(double input)
+void AbdNode::scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan)
 {
-	double result = input * M_PI / 180;
-	return result;
-}
-
-void abd_node::scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan)
-{
-	bool breakpoint[LASER_NUMBER]; //브레이크 포인트 위치 저장
-	double laser_data[LASER_NUMBER]; //라이다 거리 값 저장
-	int laser_intensity[LASER_NUMBER];
-	double Dmax = 0.0;
-	double distance = 0.0;
+	unique_ptr<bool[]> p_is_breakpoint(new bool[LASER_NUMBER]); 
+	unique_ptr<double[]> p_laser_data(new double[LASER_NUMBER]);
+	double d_max = 0.0;
+	double nearby_point_dist = 0.0;
 
     for(int i = 0; i < LASER_NUMBER; i++)
 	{
-		laser_data[i] = scan->ranges[i];
-		laser_intensity[i] = (int)(scan->intensities[i]);
-		breakpoint[i] = false;
+		p_laser_data[i] = scan->ranges[i];
+		p_is_breakpoint[i] = false;
 	}
 
-	for(int n=2; n<LASER_NUMBER; n++)
+	for(int n = 2; n < LASER_NUMBER; n++)
 	{
-		Dmax = laser_data[n-1] * (sin(deg_rad(LASER_THETA))/sin(deg_rad(LAMBDA-LASER_THETA))) + 3*SIGMA;
-		distance = sqrt(pow(laser_data[n-1], 2) + pow(laser_data[n], 2) - 2*laser_data[n-1]*laser_data[n]*cos(deg_rad(LASER_THETA)));
-		if(distance > Dmax)
+		d_max = p_laser_data[n-1] * (sin(deg2rad(LASER_THETA))/sin(deg2rad(LAMBDA-LASER_THETA))) + 3*SIGMA;
+		nearby_point_dist = sqrt(pow(p_laser_data[n-1], 2) + pow(p_laser_data[n], 2) - 2*p_laser_data[n-1]*p_laser_data[n]*cos(deg2rad(LASER_THETA)));
+		if(nearby_point_dist > d_max)
 		{
-			breakpoint[n] = true;
-			breakpoint[n-1] = true;
+			p_is_breakpoint[n] = true;
+			p_is_breakpoint[n-1] = true;
 		}
 	}
 
-	for(int k=0; k<LASER_NUMBER; k++)
+	for(int k = 0; k < LASER_NUMBER; k++)
 	{
-		if(breakpoint[k] == true)
+		if(p_is_breakpoint[k] == true)
 		{
-			msg.data[k] = 0;
-			breakpoint_msg.data[k] = true; //breakpointpub
-		}
-		else if(laser_intensity[k] < 600.0)
-		{
-			msg.data[k] = 0;
-			breakpoint_msg.data[k] = false; //breakpointpub
+			bp_removed_laser_msg_.data[k] = 0;
+			is_breakpoint_msg_.data[k] = true; 
 		}
 		else
 		{
-			msg.data[k] = laser_data[k];
-			breakpoint_msg.data[k] = false;
+			bp_removed_laser_msg_.data[k] = p_laser_data[k];
+			is_breakpoint_msg_.data[k] = false;
 		}
 	}
 
-    abd_pub.publish(msg);
-	abd_pub2.publish(breakpoint_msg); //breakpointpub
+    bp_removed_laser_pub_.publish(bp_removed_laser_msg_);
+	is_breakpoint_pub_.publish(is_breakpoint_msg_); 
 }
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "abd_node");
-  abd_node node;
+  AbdNode node;
 
   ros::spin();
 }
