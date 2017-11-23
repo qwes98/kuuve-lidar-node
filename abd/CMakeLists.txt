@@ -36,7 +36,6 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(abd_test src/abd_test.cpp)
-target_link_libraries(abd_test ${catkin_LIBRARIES})
-##add_dependencies(abd_test abd_generate_messages_cpp)
-add_dependencies(abd_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_executable(abd_node src/memory_optimized_src/memory_optimized_abd_node.cpp)
+target_link_libraries(abd_node ${catkin_LIBRARIES})
+add_dependencies(abd_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
