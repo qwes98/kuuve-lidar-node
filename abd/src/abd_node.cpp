@@ -3,78 +3,54 @@
 #include <abd/Breakpoint.h>
 #include <sensor_msgs/LaserScan.h>
 
-#include <iostream>
-#include <cmath>
-#include <memory>
-using namespace std;
-
+#include "abd.cpp"
 class AbdNode
 {
+public:
+	AbdNode();
+	void scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan);
+
 private:
-	//라이다 스펙
-	const int LASER_NUMBER = 1080;
-	const double LASER_THETA = 0.25;
+	Abd abd;
 
-	//실험적으로 얻어야 할 인자값들
-	const int LAMBDA = 10;			//Testing : LAMBDA 90
-	const double SIGMA = 0.03;		//Testing : SIGMA 0.005
-
-	ros::NodeHandle n;
+	ros::NodeHandle nh_;
 	ros::Publisher bp_removed_laser_pub_;
 	ros::Publisher is_breakpoint_pub_;
 	ros::Subscriber scan_sub_;
 
 	abd::Data bp_removed_laser_msg_;
 	abd::Breakpoint is_breakpoint_msg_; 
-public:
-	AbdNode();
-	const double deg2rad(const double& deg) const { return deg * M_PI / 180; }
-	void scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan);
 };
 
-AbdNode::AbdNode(void)
+//-------------------------------------------
+AbdNode::AbdNode()
+	: abd(270, 0.25)
 {
-	bp_removed_laser_pub_ = n.advertise<abd::Data>("breakpoint_removed", 100);
-	is_breakpoint_pub_ = n.advertise<abd::Breakpoint>("breakpoint", 100);
-	scan_sub_ = n.subscribe("/scan", 100, &AbdNode::scanCallback, this);
+	bp_removed_laser_pub_ = nh_.advertise<abd::Data>("breakpoint_removed", 100);
+	is_breakpoint_pub_ = nh_.advertise<abd::Breakpoint>("breakpoint", 100);
+	scan_sub_ = nh_.subscribe("/scan", 100, &AbdNode::scanCallback, this);
 }
 
 void AbdNode::scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan)
 {
-	double d_max = 0.0;
-	double nearby_point_dist = 0.0;
+	const int laser_number = abd.getLaserNumber();
+	unique_ptr<double[]> raw_laser_ptr(new double[laser_number]);
+	unique_ptr<bool[]> breakpoint_ptr(new bool[laser_number]);
+	unique_ptr<double[]> preprocessed_laser_ptr(new double[laser_number]);
 
-    for(int i = 0; i < LASER_NUMBER; i++)
-	{
-		is_breakpoint_msg_.data[i] = false;
+	for(int i = 0; i < laser_number; i++) {
+		raw_laser_ptr[i] = scan->ranges[i];
 	}
 
-	for(int n = 2; n < LASER_NUMBER; n++)
-	{
-		d_max = scan->ranges[n-1] * (sin(deg2rad(LASER_THETA))/sin(deg2rad(LAMBDA-LASER_THETA))) + 3*SIGMA;
-		nearby_point_dist = sqrt(pow(scan->ranges[n-1], 2) + pow(scan->ranges[n], 2) - 2*scan->ranges[n-1]*scan->ranges[n]*cos(deg2rad(LASER_THETA)));
-		if(nearby_point_dist > d_max)
-		{
-			bp_removed_laser_msg_.data[n] = 0;
-			is_breakpoint_msg_.data[n] = true; 
-			is_breakpoint_msg_.data[n-1] = true; 
-		}
-		else 
-		{
-			
-			bp_removed_laser_msg_.data[n] = scan->ranges[n];
-		}
+	//abd.getBreakpointArray(raw_laser_ptr, breakpoint_ptr);
+	//abd.getPreprocessedLaserData(raw_laser_ptr, preprocessed_laser_ptr);
+	abd.getBpAndPreprocessedDataArray(raw_laser_ptr, breakpoint_ptr, preprocessed_laser_ptr);
+
+	for(int i = 0; i < laser_number; i++) {
+		bp_removed_laser_msg_.data[i] = preprocessed_laser_ptr[i];
+		is_breakpoint_msg_.data[i] = breakpoint_ptr[i];
 	}
 
     bp_removed_laser_pub_.publish(bp_removed_laser_msg_);
 	is_breakpoint_pub_.publish(is_breakpoint_msg_); 
 }
-
-int main(int argc, char** argv)
-{
-  ros::init(argc, argv, "abd_node");
-  AbdNode node;
-
-  ros::spin();
-}
-
