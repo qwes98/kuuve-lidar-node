@@ -7,6 +7,7 @@ using namespace std;
 class LaserSpec 
 {
 public:
+	LaserSpec() = default;
 	LaserSpec(const int deg_of_view, const double resolution)
 		: POINT_NUMBER(deg_of_view / resolution),
 		  DEG_OF_VIEW(deg_of_view),
@@ -27,14 +28,14 @@ class Abd
 public:
 	Abd(const int deg_of_view, const double resolution, const int lambda = 90, const double sigma = 0.005);
 
-	template <class T1, class T2> void getBreakpointArray(T1& raw_laser_data, T2& breakpoint);
-	template <class T> void getPreprocessedLaserData(T& raw_laser_data, T& preprocessed_laser_data);
-	template <class T1, class T2> void getBpAndPreprocessedDataArray(T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data);
+	template <class T1, class T2> void getBreakpointArray(const T1& raw_laser_data, T2& breakpoint);
+	template <class T> void getPreprocessedLaserData(const T& raw_laser_data, T& preprocessed_laser_data);
+	template <class T1, class T2> void getBpAndPreprocessedDataArray(const T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data);
 
 	//array size must be defined value (not variable)
-	template <std::size_t T> bool getBreakpointArray(array<double, T>& raw_laser_data, array<bool, T>& breakpoint);
-	template <std::size_t T> bool getPreprocessedLaserData(array<double, T>& raw_laser_data, array<double, T>& preprocessed_laser_data);
-	template <std::size_t T> bool getBpAndPreprocessedDataArray(array<double, T>& raw_laser_data, array<bool, T>& breakpoint, array<double, T>& preprocessed_laser_data);
+	template <std::size_t T> bool getBreakpointArray(const array<double, T>& raw_laser_data, array<bool, T>& breakpoint);
+	template <std::size_t T> bool getPreprocessedLaserData(const array<double, T>& raw_laser_data, array<double, T>& preprocessed_laser_data);
+	template <std::size_t T> bool getBpAndPreprocessedDataArray(const array<double, T>& raw_laser_data, array<bool, T>& breakpoint, array<double, T>& preprocessed_laser_data);
 
 	const int getLaserNumber() const;
 	const int getLaserDegOfView() const;
@@ -49,9 +50,9 @@ private:
 	const double deg2rad(const double deg) const;
 	const double getDmax(const double dist) const;
 	const double getPointsDistance(const double dist0, const double dist1) const;
-	template <class T1, class T2> void getBreakpointArray_(T1& raw_laser_data, T2& breakpoint);
-	template <class T> void getPreprocessedLaserData_(T& raw_laser_data, T& preprocessed_laser_data);
-	template <class T1, class T2> void getBpAndPreprocessedDataArray_(T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data);
+	template <class T1, class T2> void getBreakpointArray_(const T1& raw_laser_data, T2& breakpoint);
+	template <class T> void getPreprocessedLaserData_(const T& raw_laser_data, T& preprocessed_laser_data);
+	template <class T1, class T2> void getBpAndPreprocessedDataArray_(const T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data);
 
 private:
 	LaserSpec laser_spec_;
@@ -174,7 +175,7 @@ struct is_bool_pointer {
     static constexpr bool const value = bool_pointer_traits<T>::value;
 };
 
-template <class T1, class T2> void Abd::getBreakpointArray(T1& raw_laser_data, T2& breakpoint)
+template <class T1, class T2> void Abd::getBreakpointArray(const T1& raw_laser_data, T2& breakpoint)
 {
 	if(!is_double_pointer<T1>::value || !is_bool_pointer<T2>::value) {
 		return;
@@ -182,7 +183,7 @@ template <class T1, class T2> void Abd::getBreakpointArray(T1& raw_laser_data, T
 	getBreakpointArray_(raw_laser_data, breakpoint);
 }
 
-template <class T> void Abd::getPreprocessedLaserData(T& raw_laser_data, T& preprocessed_laser_data)
+template <class T> void Abd::getPreprocessedLaserData(const T& raw_laser_data, T& preprocessed_laser_data)
 {
 	if(!is_double_pointer<T>::value) {
 		return;
@@ -190,7 +191,7 @@ template <class T> void Abd::getPreprocessedLaserData(T& raw_laser_data, T& prep
 	getPreprocessedLaserData_(raw_laser_data, preprocessed_laser_data);
 }
 
-template <class T1, class T2> void Abd::getBpAndPreprocessedDataArray(T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data)
+template <class T1, class T2> void Abd::getBpAndPreprocessedDataArray(const T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data)
 {
 	if(!is_double_pointer<T1>::value || !is_bool_pointer<T2>::value) {
 		return;
@@ -199,24 +200,24 @@ template <class T1, class T2> void Abd::getBpAndPreprocessedDataArray(T1& raw_la
 }
 
 
-template <std::size_t T> bool Abd::getBreakpointArray(array<double, T>& raw_laser_data, array<bool, T>& breakpoint)
+template <std::size_t T> bool Abd::getBreakpointArray(const array<double, T>& raw_laser_data, array<bool, T>& breakpoint)
 {
 	getBreakpointArray_(raw_laser_data, breakpoint);
 }
 
-template <std::size_t T> bool Abd::getPreprocessedLaserData(array<double, T>& raw_laser_data, array<double, T>& preprocessed_laser_data)
+template <std::size_t T> bool Abd::getPreprocessedLaserData(const array<double, T>& raw_laser_data, array<double, T>& preprocessed_laser_data)
 {
 	getPreprocessedLaserData_(raw_laser_data, preprocessed_laser_data);
 }
 
-template <std::size_t T> bool Abd::getBpAndPreprocessedDataArray(array<double, T>& raw_laser_data, array<bool, T>& breakpoint, array<double, T>& preprocessed_laser_data)
+template <std::size_t T> bool Abd::getBpAndPreprocessedDataArray(const array<double, T>& raw_laser_data, array<bool, T>& breakpoint, array<double, T>& preprocessed_laser_data)
 {
 	getBpAndPreprocessedDataArray_(raw_laser_data, breakpoint, preprocessed_laser_data);
 }
 
 
 template <class T1, class T2> 
-void Abd::getBreakpointArray_(T1& raw_laser_data, T2& breakpoint)
+void Abd::getBreakpointArray_(const T1& raw_laser_data, T2& breakpoint)
 {
 	int point_number = laser_spec_.getNumber();
 	double d_max = 0.0;
@@ -238,7 +239,7 @@ void Abd::getBreakpointArray_(T1& raw_laser_data, T2& breakpoint)
 }
 
 template <class T>
-void Abd::getPreprocessedLaserData_(T& raw_laser_data, T& preprocessed_laser_data)
+void Abd::getPreprocessedLaserData_(const T& raw_laser_data, T& preprocessed_laser_data)
 {
 	int point_number = laser_spec_.getNumber();
 	double d_max = 0.0;
@@ -263,7 +264,7 @@ void Abd::getPreprocessedLaserData_(T& raw_laser_data, T& preprocessed_laser_dat
 }
 
 template <class T1, class T2> 
-void Abd::getBpAndPreprocessedDataArray_(T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data)
+void Abd::getBpAndPreprocessedDataArray_(const T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data)
 {
 	int point_number = laser_spec_.getNumber();
 	double d_max = 0.0;
