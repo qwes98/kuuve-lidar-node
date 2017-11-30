@@ -4,6 +4,7 @@
 #include <array>
 using namespace std;
 
+//TODO: add docstring
 class LaserSpec 
 {
 public:
@@ -13,7 +14,7 @@ public:
 		  DEG_OF_VIEW(deg_of_view),
 		  RESOLUTION(resolution)
 	{}
-
+//TODO: exception about negative input
 	const int getNumber() const { return POINT_NUMBER; }
 	const int getDegOfView() const { return DEG_OF_VIEW; }
 	const double getResolution() const { return RESOLUTION; }
@@ -36,6 +37,7 @@ public:
 	template <std::size_t T> bool getBreakpointArray(const array<double, T>& raw_laser_data, array<bool, T>& breakpoint);
 	template <std::size_t T> bool getPreprocessedLaserData(const array<double, T>& raw_laser_data, array<double, T>& preprocessed_laser_data);
 	template <std::size_t T> bool getBpAndPreprocessedDataArray(const array<double, T>& raw_laser_data, array<bool, T>& breakpoint, array<double, T>& preprocessed_laser_data);
+//TODO: add get function for vector
 
 	const int getLaserNumber() const;
 	const int getLaserDegOfView() const;
@@ -175,6 +177,7 @@ struct is_bool_pointer {
     static constexpr bool const value = bool_pointer_traits<T>::value;
 };
 
+//TODO: change return to exception
 template <class T1, class T2> void Abd::getBreakpointArray(const T1& raw_laser_data, T2& breakpoint)
 {
 	if(!is_double_pointer<T1>::value || !is_bool_pointer<T2>::value) {
