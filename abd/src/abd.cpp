@@ -1,29 +1,50 @@
+/**
+ *  @file abd.cpp
+ *
+ */
+
 #include <iostream>
 #include <cmath>
 #include <memory>
 #include <array>
+#include <stdexcept>
 using namespace std;
 
-//TODO: add docstring
+/**
+ *  @brief   laser관련 정보를 담기 위한 클래스
+ *  @author  Jiwon Park
+ *
+ */
 class LaserSpec 
 {
 public:
-	LaserSpec() = default;
+	/** 
+	 *  @param     deg_of_view laser 시야각
+	 *  @param     resolution  laser 분해능
+	 *  @exception deg_of_view 또는 resolution 값이 0(deg) 이하 또는 360(deg) 초과일시 invalid_argument 객체를 던짐
+	 *
+	 */
 	LaserSpec(const int deg_of_view, const double resolution)
-		: POINT_NUMBER(deg_of_view / resolution),
-		  DEG_OF_VIEW(deg_of_view),
-		  RESOLUTION(resolution)
-	{}
-//TODO: exception about negative input
-	const int getNumber() const { return POINT_NUMBER; }
-	const int getDegOfView() const { return DEG_OF_VIEW; }
-	const double getResolution() const { return RESOLUTION; }
+	{
+		if(deg_of_view <= 0 || deg_of_view > 360)
+			throw invalid_argument("Invalid argument of deg_of_view in LaserSpec class");
+		else if(resolution <= 0 || resolution > 360)
+			throw invalid_argument("Invalid argument of resolution in LaserSpec class");
+
+		point_number_ = deg_of_view / resolution;
+		deg_of_view_ = deg_of_view;
+		resolution_ = resolution;
+	}
+	const int getNumber() const { return point_number_; }
+	const int getDegOfView() const { return deg_of_view_; }
+	const double getResolution() const { return resolution_; }
 private:
-	const int POINT_NUMBER;
-	const int DEG_OF_VIEW;
-	const double RESOLUTION;
+	int point_number_; ///< laser point 개수
+	int deg_of_view_;
+	double resolution_;
 };	
 
+//TODO: add docstring
 class Abd
 {
 public:
