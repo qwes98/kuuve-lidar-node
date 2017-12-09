@@ -34,9 +34,15 @@ AbdNode::AbdNode()
 void AbdNode::scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan)
 {
 	const int laser_number = abd.getLaserNumber();
+	try {
 	unique_ptr<double[]> raw_laser_ptr(new double[laser_number]);
 	unique_ptr<bool[]> breakpoint_ptr(new bool[laser_number]);
 	unique_ptr<double[]> preprocessed_laser_ptr(new double[laser_number]);
+	} catch(const bad_alloc& e) {
+		cerr << __FILE__ << "(" << __LINE__
+			<< "): Unable to allocate memory!" << endl;
+		return;
+	}
 
 	for(int i = 0; i < laser_number; i++) {
 		raw_laser_ptr[i] = scan->ranges[i];

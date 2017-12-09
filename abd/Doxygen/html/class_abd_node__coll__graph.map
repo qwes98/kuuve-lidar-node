@@ -1,4 +1,4 @@
 <map id="AbdNode" name="AbdNode">
-<area shape="rect" id="node2" href="$class_abd.html" title="{Abd\n|&#45; lambda_\l&#45; sigma_\l|+ Abd()\l+ getBreakpointArray()\l+ getPreprocessedLaserData()\l+ getBpAndPreprocessedData\lArray()\l+ getBreakpointArray()\l+ getPreprocessedLaserData()\l+ getBpAndPreprocessedData\lArray()\l+ getLaserNumber()\l+ getLaserDegOfView()\l+ getLaserResolution()\l+ getLambda()\l+ getSigma()\l+ setLambda()\l+ setSigma()\l&#45; deg2rad()\l&#45; getDmax()\l&#45; getPointsDistance()\l&#45; getBreakpointArray_()\l&#45; getPreprocessedLaserData_()\l&#45; getBpAndPreprocessedData\lArray_()\l}" alt="" coords="5,219,208,633"/>
-<area shape="rect" id="node3" href="$class_laser_spec.html" title="laser관련 정보를 담기 위한 클래스 " alt="" coords="43,5,170,156"/>
+<area shape="rect" id="node2" href="$class_abd.html" title="ABD(Adaptive BreakPoint)를 구현한 클래스 " alt="" coords="5,219,208,633"/>
+<area shape="rect" id="node3" href="$class_laser_spec.html" title="laser관련 정보를 담고 있는 클래스 " alt="" coords="43,5,170,156"/>
 </map>

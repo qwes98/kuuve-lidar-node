@@ -18,10 +18,10 @@ var indexSectionNames =
 
 var indexSectionLabels =
 {
-  0: "All",
-  1: "Classes",
-  2: "Files",
-  3: "Functions",
-  4: "Variables"
+  0: "모두",
+  1: "클래스",
+  2: "파일들",
+  3: "함수",
+  4: "변수"
 };
 

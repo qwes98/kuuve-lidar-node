@@ -2,7 +2,7 @@
 <area shape="rect" id="node2" href="$class_abd_node.html#a198a7300cd6249e568e75f5ac2435cea" title="AbdNode::AbdNode" alt="" coords="184,9,323,36"/>
 <area shape="rect" id="node3" href="$class_abd_node.html#a5bd20903b6b7db0748dcf31a4b173434" title="AbdNode::scanCallback" alt="" coords="371,35,533,61"/>
 <area shape="rect" id="node4" href="$class_abd.html#aa74ecd08baf62f20b65489a1862e0d09" title="Abd::getLaserNumber" alt="" coords="602,5,751,32"/>
-<area shape="rect" id="node5" href="$class_abd.html#a533a7ee577e150174ae8547019321c04" title="Abd::getBpAndPreprocessed\lDataArray" alt="" coords="581,57,772,98"/>
+<area shape="rect" id="node5" href="$class_abd.html#a533a7ee577e150174ae8547019321c04" title="laser raw데이터(거리값)로부터 breakpoint들을 찾아내고 전처리된 laser 데이터를 만들어냄 ..." alt="" coords="581,57,772,98"/>
 <area shape="rect" id="node6" href="$class_abd.html#a551906574f67b0dc2f49f4fa2da27148" title="Abd::getBpAndPreprocessed\lDataArray_" alt="" coords="820,57,1011,98"/>
 <area shape="rect" id="node7" href="$class_laser_spec.html#a2e5048a0f229c82c5767b15e55af27e2" title="LaserSpec::getNumber" alt="" coords="1061,13,1217,40"/>
 <area shape="rect" id="node8" href="$class_abd.html#aff70ce0a092fe4a7761392b0a20e9eff" title="Abd::getDmax" alt="" coords="1085,64,1192,91"/>
