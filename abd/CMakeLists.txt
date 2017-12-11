@@ -36,7 +36,18 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(abd_node src/abd_node_main.cpp)
+include_directories(
+  ${catkin_INCLUDE_DIRS} ./include
+)
+
+#executable file size: 387,040KB
+#add_executable(abd_node src/abd_node.cpp src/abd.cpp)
+
+#executable file size: 387,744KB
+add_executable(abd_node src/abd_node.cpp src/abd.cpp src/abd_impl.cpp)
+
+#executable file size: 356,560KB
 #add_executable(abd_node src/memory_optimized_src/memory_optimized_abd_node.cpp)
+
 target_link_libraries(abd_node ${catkin_LIBRARIES})
 add_dependencies(abd_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
