@@ -45,9 +45,6 @@ public:
 	 *  2. getPreprocessedLaserData : laser raw데이터가 있는 컨테이너, breakpoint를 통해 전처리된 laser 데이터를 저장할 빈 컨테이너를 인자로 전달하면 계산하여 저장
 	 *  3. getBpAndPreprocessedDataArray : 1,2번을 한꺼번에 하는 함수
 	 *
-	 *
-	 *  @exception 인자로 전달되는 컨테이너가 c-array(pointer) 또는 unique_ptr 또는 std::array가 아닐 시 invalid_argument 객체를 던짐
-	 *
 	 */
 
 	/**
@@ -55,6 +52,11 @@ public:
 	 *
 	 *  @param	raw_laser_data laser raw데이터(거리값) 컨테이너
 	 *  @param  breakpoint	   breakpoint 저장할 컨테이너
+	 *
+     *  @exception 인자로 전달되는 컨테이너가 c-array(pointer) 또는 unique_ptr 또는 std::array가 아닐 시 invalid_argument 객체를 던짐
+     *             raw_laser_data와 breakpoint의 컨테이너가 다른 종류일 시 invalid_argument 객체를 던짐
+     *
+     *  @details Algorithm Complexity: O(N)
 	 *
 	 */
 	template <class T1, class T2> void getBreakpointArray(const T1& raw_laser_data, T2& breakpoint);
@@ -65,6 +67,10 @@ public:
 	 *  @param	raw_laser_data          laser raw데이터(거리값) 컨테이너
 	 *  @param  preprocessed_laser_data	breakpoint 저장할 컨테이너
 	 *
+     *  @exception 인자로 전달되는 컨테이너가 c-array(pointer) 또는 unique_ptr 또는 std::array가 아닐 시 invalid_argument 객체를 던짐
+     *
+     *  @details Algorithm Complexity: O(N)
+	 *
 	 */
 	template <class T> void getPreprocessedLaserData(const T& raw_laser_data, T& preprocessed_laser_data);
 
@@ -74,6 +80,11 @@ public:
 	 *  @param	raw_laser_data  	    laser raw데이터(거리값) 컨테이너
 	 *  @param  breakpoint	            breakpoint 저장할 컨테이너
 	 *  @param  preprocessed_laser_data	breakpoint 저장할 컨테이너
+	 *
+     *  @exception 인자로 전달되는 컨테이너가 c-array(pointer) 또는 unique_ptr 또는 std::array가 아닐 시 invalid_argument 객체를 던짐
+     *             raw_laser_data와 breakpoint의 컨테이너가 다른 종류일 시 invalid_argument 객체를 던짐
+     *
+     *  @details Algorithm Complexity: O(N)
 	 *
 	 */
 	template <class T1, class T2> void getBpAndPreprocessedDataArray(const T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data);
