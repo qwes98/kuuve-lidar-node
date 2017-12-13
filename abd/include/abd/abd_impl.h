@@ -114,7 +114,7 @@ public:
 	AbdImpl& setLambda(const int lambda);
 	AbdImpl& setSigma(const double sigma);
 
-private:
+protected:
 	const double deg2rad(const double deg) const;
 	const double getDmax(const double dist) const;
 	const double getPointsDistance(const double dist0, const double dist1) const;
@@ -122,7 +122,7 @@ private:
 	template <class T> void getPreprocessedLaserData_(const T& raw_laser_data, T& preprocessed_laser_data);
 	template <class T1, class T2> void getBpAndPreprocessedDataArray_(const T1& raw_laser_data, T2& breakpoint, T1& preprocessed_laser_data);
 
-private:
+protected:
 	LaserSpec laser_spec_;	///< Abd를 적용할 라이다의 스펙
 	int lambda_;	    	///< Dmax를 결정하는 첫번째 인자
 	double sigma_;			///< Dmax를 결정하는 두번째 인자

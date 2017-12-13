@@ -108,7 +108,7 @@ public:
 	 */
 	Abd& setLambda(const int lambda);
 	Abd& setSigma(const double sigma);
-private:
+protected:
 	AbdImpl* impl_;
 };
 

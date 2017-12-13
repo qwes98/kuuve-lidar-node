@@ -38,7 +38,7 @@ public:
 	const int getNumber() const { return point_number_; }
 	const int getDegOfView() const { return deg_of_view_; }
 	const double getResolution() const { return resolution_; }
-private:
+protected:
 	int point_number_; ///< laser point 개수
 	int deg_of_view_;
 	double resolution_;
